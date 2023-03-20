@@ -2,15 +2,16 @@ import subprocess
 import os
 import webbrowser
 import tkinter
-from pytube import YouTube
+import yt_dlp
 
-# Put video URL
 url = ''
+# https://www.youtube.com/watch?v=1aA1WGON49E&t=16s
 
 def submit():
     global url
     url = input_box.get()
     window.destroy()
+
 
 window = tkinter.Tk()
 window.geometry("300x150")
@@ -24,10 +25,13 @@ window.mainloop()
 
 dir_output = os.path.join(os.path.join(os.path.expanduser('~')), 'Videos/YoutubeDownloader/')
 
-# Download youtube video
-video = YouTube(url)
-video_stream = video.streams.get_highest_resolution()
-video_stream.download(dir_output)
+ydl_opts = {
+    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+    'outtmpl': dir_output+'%(title)s.%(ext)s',
+}
+
+with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+    ydl.download([url])
 
 file = dir_output+os.listdir(dir_output)[0]
 
