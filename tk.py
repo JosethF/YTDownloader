@@ -1,104 +1,158 @@
-""" from tkinter import *
-
-def change_window():
-    window.destroy()
-    new_window = Tk()
-    new_window.title("New Window")
-    new_window.geometry("200x200")
-    new_window.mainloop()
-
-options = ["Option 1", "Option 2", "Option 3"]
-
-window = Tk()
-window.title("Window")
-window.geometry("200x200")
-
-optVariable = StringVar(window)
-optVariable.set(options[0])
-
-optMenu = OptionMenu(window, optVariable, *options)
-optMenu.pack()
-
-button = Button(window, text="Change Window", command=change_window)
-button.pack()
-
-window.mainloop() """
-
-from tkinter import *
-import yt_dlp
-import tkinter
-import subprocess
+from tkinter import Tk, Label, Radiobutton, StringVar, Entry, Button, Frame, filedialog
 import os
-import webbrowser
+import subprocess
+import yt_dlp
 
+def create_first_window():
+    first_window = Tk()
+    first_window.title("Choose your download option:")
+    first_window.geometry("400x200")
 
-def change_window():
-    window.destroy()
-    if(var.get()=="btn1"): option1()
+    input_file = ''
 
-url = ''
-# https://www.youtube.com/watch?v=1aA1WGON49E&t=16s
+    separator = Frame(first_window, height=30, bg="")
+    separator.pack()
 
-def submit(input_box):
-    global url
-    url = input_box
-    print("url")
+    var = StringVar(value="option1")
 
-def option1():
-    window = Tk()
-    separator = Frame(window, height=10, bg="")
-    separator.pack(fill=X, padx=5, pady=5)
-    label = Label(window, text="Put your URL:")
-    window.geometry("400x200")
+    label = Label(first_window, text="Choose your download option:")
     label.pack()
-    input_box = Entry(window)
-    input_box.pack()
-    separator = Frame(window, height=10, bg="")
-    separator.pack(fill=X, padx=5, pady=5)
-    submit_button = Button(window, text="Submit")
+
+    separator = Frame(first_window, height=10, bg="")
+    separator.pack()
+
+    option1_button = Radiobutton(first_window, text="Youtube Video", variable=var, value="option1")
+    option1_button.pack()
+
+    option2_button = Radiobutton(first_window, text="Local Video", variable=var, value="option2")
+    option2_button.pack()
+
+    separator = Frame(first_window, height=10, bg="")
+    separator.pack()
+
+    def open_second_window():
+        first_window.destroy()
+        second_window = Tk()
+        second_window.geometry("400x200")
+
+        if(var.get() == "option1"):
+
+            second_window.title("YOUTUBE")
+            
+            separator = Frame(second_window, height=10, bg="")
+            separator.pack()
+            
+            entry_label = Label(second_window, text="Put your URL:")
+            entry_label.pack()
+
+            entry = Entry(second_window)
+            entry.pack()
+
+            separator = Frame(second_window, height=10, bg="")
+            separator.pack()
+
+            var2 = StringVar(value="option1")
+
+            option1_button2 = Radiobutton(second_window, text="Download Video", variable=var2, value="option1")
+            option1_button2.pack()
+
+            option2_button2 = Radiobutton(second_window, text="Download Video and Subtitle", variable=var2, value="option2")
+            option2_button2.pack()
+
+            option3_button2 = Radiobutton(second_window, text="Download Audio", variable=var2, value="option3")
+            option3_button2.pack()
+
+            
+            def submit_function():
+                
+                dir_output = os.path.join(os.path.join(os.path.expanduser('~')), 'Videos/')
+                file = dir_output+os.listdir(dir_output)[0]
+
+                data = entry.get()
+
+                if(var2.get() == "option3"):
+                    audio_output= dir_output+"/audio_converter"
+                    ydl_opts = {
+                        'format': 'bestaudio/best',
+                        'outtmpl': audio_output,
+                        'postprocessors': [{
+                            'key': 'FFmpegExtractAudio',
+                            'preferredcodec': 'aac',
+                            'preferredquality': '192',
+                        }],
+                    }
+
+                    # Create the yt_dlp downloader object and start the download
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        ydl.download([data])
+
+                else:                    
+
+                    ydl_opts = {
+                    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+                    'outtmpl': dir_output+'%(title)s.%(ext)s',
+                    }
+
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        ydl.download([data])
+                    
+                    
+                    if(var2.get() == "option2"):
+                        subprocess.run(['whisper', file, '--model','base', '--output_dir', dir_output, '--output_format', 'srt'],check=True)
+                
+                second_window.destroy()
+
+            separator = Frame(second_window, height=10, bg="")
+            separator.pack()
+
+            submit_button = Button(second_window, text="Submit", command=submit_function)
+            submit_button.pack()
+
+            second_window.mainloop()
+        
+        else:
+            
+            second_window.title("LOCAL")
+            separator = Frame(second_window, height=20, bg="")
+            separator.pack()
+
+            entry_label = Label(second_window, text="Choose your File:")
+            entry_label.pack()
+
+            separator = Frame(second_window, height=10, bg="")
+            separator.pack()
+
+            def select_file():
+                global input_file
+                input_file = filedialog.askopenfilename()
+                print(input_file)
+            
+            file_button = Button(second_window, text="Select File", command=select_file)
+            file_button.pack()
+
+            separator = Frame(second_window, height=10, bg="")
+            separator.pack()
+
+            var3 = StringVar(value="option1")
+
+            option1_button3 = Radiobutton(second_window, text="Transcribe Video", variable=var3, value="option1")
+            option1_button3.pack()
+
+            option2_button3 = Radiobutton(second_window, text="Convert to Audio", variable=var3, value="option2")
+            option2_button3.pack()
+
+            def submit_action():
+                print(input_file)
+            
+            separator = Frame(second_window, height=10, bg="")
+            separator.pack()
+
+            submit_button = Button(second_window, text="Submit", command=submit_action)
+            submit_button.pack()
+
+    submit_button = Button(first_window, text="Submit", command=open_second_window)
     submit_button.pack()
 
-    dir_output = os.path.join(os.path.join(os.path.expanduser('~')), 'Videos/YoutubeDownloader/')
-""" 
-    ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
-        'outtmpl': dir_output+'%(title)s.%(ext)s',
-    }
+    first_window.mainloop()
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
-    window.geometry("400x200")
-    window.mainloop() """
-
-window = Tk()
-window.title("Youtube Downloader")
-window.geometry("400x200")
-
-separator = Frame(window, height=10, bg="")
-separator.pack(fill=X, padx=5, pady=5)
-
-label = Label(window, text="Choose your download option:")
-label.pack()
-
-separator = Frame(window, height=5, bg="")
-separator.pack(fill=X, padx=5, pady=5)
-
-var = StringVar()
-var.set("Youtube Video")
-
-rb1 = Radiobutton(window, text="Youtube Video", variable=var, value="btn1")
-rb1.pack()
-
-rb2 = Radiobutton(window, text="Youtube Video with subtitles", variable=var, value="btn2")
-rb2.pack()
-
-rb3 = Radiobutton(window, text="Subtitles from Video", variable=var, value="btn3")
-rb3.pack()
-
-separator = Frame(window, height=5, bg="")
-separator.pack(fill=X, padx=5, pady=5)
-
-button = Button(window, text="Run Window", command=change_window)
-button.pack()
-
-window.mainloop()
+create_first_window()
