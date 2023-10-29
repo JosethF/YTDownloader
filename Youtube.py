@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Radiobutton, StringVar, Entry, Button, Frame, filedialog
+from tkinter import Tk, Label, Radiobutton, StringVar, Entry, Button, Frame
 import os
 import subprocess
 import yt_dlp
