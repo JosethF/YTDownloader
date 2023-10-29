@@ -42,7 +42,6 @@ def create_first_window():
         
         dir_output = os.path.join(os.path.join(os.path.expanduser('~')), 'YTDownloader/')
         
-
         data = entry.get()
 
         if(var.get() == "option3"):
