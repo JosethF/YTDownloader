@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Radiobutton, StringVar, Entry, Button, Frame, filedialog
+from tkinter import Tk, Label, Radiobutton, StringVar, Entry, Button, Frame
 import os
 import subprocess
 import yt_dlp
@@ -42,7 +42,6 @@ def create_first_window():
         
         dir_output = os.path.join(os.path.join(os.path.expanduser('~')), 'YTDownloader/')
         
-
         data = entry.get()
 
         if(var.get() == "option3"):
