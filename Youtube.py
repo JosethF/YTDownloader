@@ -40,7 +40,7 @@ def create_first_window():
 
     def submit_function():
         
-        dir_output = os.path.join(os.path.join(os.path.expanduser('~')), 'YTDownloader/')
+        dir_output = os.path.join(os.path.join(os.path.expanduser('~')), "Desktop/",'YTDownloader/')
         
         data = entry.get()
 
@@ -69,7 +69,6 @@ def create_first_window():
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([data])
-            
             
             if(var.get() == "option2"):
                 file = dir_output+os.listdir(dir_output)[0]
