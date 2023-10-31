@@ -3,6 +3,8 @@ import os
 import subprocess
 import yt_dlp
 
+data = None
+
 # Function to create the main window
 def create_first_window():
     # Create a Tkinter window
