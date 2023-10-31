@@ -47,8 +47,8 @@ This Python application allows users to choose between converting local videos t
 
 ## How to Use
 1. **Select your desired file to translate:**
-``` 
-This is the input extension file list:
+```
+This is the list of input extension files:
         - m4a.
         - mp3.
         - webm.
